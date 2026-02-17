@@ -11,6 +11,16 @@
         button { padding: 10px 20px; background: #27ae60; color: white; border: none; cursor: pointer; }
         ul { list-style: none; padding: 0; }
         li { background: #f9f9f9; border-bottom: 1px solid #ddd; padding: 10px; display: flex; justify-content: space-between; }
+        .btn-delete {
+            background-color: #ff4444;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            margin-left: 10px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .btn-delete:hover { background-color: #cc0000; }
     </style>
 </head>
 <body>
@@ -28,37 +38,60 @@
 <script>
     const API_URL = 'http://localhost:8080/tarefas';
 
-    // 1. Função para BUSCAR as tarefas (GET)
-    async function carregarTarefas() {
-        const resposta = await fetch(API_URL);
-        const tarefas = await resposta.json();
+        // 1. LISTAR (GET)
+        async function carregarTarefas() {
+            const resposta = await fetch(API_URL);
+            const tarefas = await resposta.json();
 
-        const lista = document.getElementById('lista');
-        lista.innerHTML = ''; // Limpa a lista atual
+            const lista = document.getElementById('lista');
+            lista.innerHTML = '';
 
-        tarefas.forEach(t => {
-            const item = document.createElement('li');
-            item.innerText = `${t.id} - ${t.descricao}`;
-            lista.appendChild(item);
-        });
-    }
+            tarefas.forEach(t => {
+                const item = document.createElement('li');
 
-    // 2. Função para CRIAR tarefa (POST)
-    async function criarTarefa() {
-        const descricao = document.getElementById('desc').value;
+                // AQUI ESTÁ A MÁGICA:
+                // Criamos um texto E um botão que chama a função deletar passando o ID
+                item.innerHTML = `
+                    <span>${t.id} - ${t.descricao}</span>
+                    <button class="btn-delete" onclick="deletarTarefa(${t.id})">Excluir</button>
+                `;
 
-        await fetch(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ "descricao": descricao })
-        });
+                lista.appendChild(item);
+            });
+        }
 
-        document.getElementById('desc').value = ''; // Limpa o campo
-        carregarTarefas(); // Recarrega a lista
-    }
+        // 2. CRIAR (POST)
+        async function criarTarefa() {
+            const descricao = document.getElementById('desc').value;
+            if (!descricao) return; // Não deixa criar vazio
 
-    // Carrega a lista assim que abrir a página
-    carregarTarefas();
+            await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ "descricao": descricao })
+            });
+
+            document.getElementById('desc').value = '';
+            carregarTarefas();
+        }
+
+        // 3. DELETAR (DELETE) - NOVO!
+        async function deletarTarefa(id) {
+            if (confirm('Quer mesmo apagar a tarefa ' + id + '?')) {
+
+                // O FETCH MUDA AQUI:
+                // Passamos a URL com ID (/tarefas/1) e o método DELETE
+                await fetch(`${API_URL}/${id}`, {
+                    method: 'DELETE'
+                });
+
+                // Recarrega a lista para mostrar que sumiu
+                carregarTarefas();
+            }
+        }
+
+        // Inicia carregando tudo
+        carregarTarefas();
 </script>
 </body>
 </html>
