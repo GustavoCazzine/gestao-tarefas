@@ -23,4 +23,10 @@ public class TarefaController {
     public Tarefa criar(@RequestBody Tarefa tarefaRecebida){
         return service.criarTarefa(tarefaRecebida.getDescricao());
     }
+
+    //DeletarTarefa
+    @DeleteMapping("/{id}")
+    public void deletarPorId(@PathVariable Integer id){
+        service.deletarPorId(id);
+    }
 }

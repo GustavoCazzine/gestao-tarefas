@@ -29,4 +29,9 @@ public class TarefaService {
     public List<Tarefa> listarTodas(){
         return tarefas;
     }
+
+    //DeletarTarefa
+    public void deletarPorId(Integer id){
+        tarefas.removeIf(tef -> tef.getId().equals(id));
+    }
 }
