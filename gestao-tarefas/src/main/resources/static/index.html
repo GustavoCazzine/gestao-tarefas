@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Minhas Tarefas - Java</title>
+    <style>
+        body { font-family: sans-serif; max-width: 600px; margin: 2rem auto; padding: 1rem; }
+        h1 { color: #2c3e50; }
+        .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
+        input { flex: 1; padding: 10px; font-size: 16px; }
+        button { padding: 10px 20px; background: #27ae60; color: white; border: none; cursor: pointer; }
+        ul { list-style: none; padding: 0; }
+        li { background: #f9f9f9; border-bottom: 1px solid #ddd; padding: 10px; display: flex; justify-content: space-between; }
+    </style>
+</head>
+<body>
+
+<h1>📝 Minha Lista de Tarefas (Java)</h1>
+
+<div class="input-group">
+    <input type="text" id="desc" placeholder="Nova tarefa...">
+    <button onclick="criarTarefa()">Adicionar</button>
+</div>
+
+<ul id="lista">
+</ul>
+
+<script>
+    const API_URL = 'http://localhost:8080/tarefas';
+
+    // 1. Função para BUSCAR as tarefas (GET)
+    async function carregarTarefas() {
+        const resposta = await fetch(API_URL);
+        const tarefas = await resposta.json();
+
+        const lista = document.getElementById('lista');
+        lista.innerHTML = ''; // Limpa a lista atual
+
+        tarefas.forEach(t => {
+            const item = document.createElement('li');
+            item.innerText = `${t.id} - ${t.descricao}`;
+            lista.appendChild(item);
+        });
+    }
+
+    // 2. Função para CRIAR tarefa (POST)
+    async function criarTarefa() {
+        const descricao = document.getElementById('desc').value;
+
+        await fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ "descricao": descricao })
+        });
+
+        document.getElementById('desc').value = ''; // Limpa o campo
+        carregarTarefas(); // Recarrega a lista
+    }
+
+    // Carrega a lista assim que abrir a página
+    carregarTarefas();
+</script>
+</body>
+</html>
