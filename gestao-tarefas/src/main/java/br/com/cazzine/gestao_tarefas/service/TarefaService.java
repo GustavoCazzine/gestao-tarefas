@@ -1,11 +1,14 @@
 package br.com.cazzine.gestao_tarefas.service;
 
 import br.com.cazzine.gestao_tarefas.model.Tarefa;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
+
 //Indica que essa class é o 'gerente'
+
 @Service
 public class TarefaService {
     //Iniciando a lista onde será guardada as tarefas
