@@ -2,6 +2,7 @@ package br.com.cazzine.gestao_tarefas.service;
 
 import br.com.cazzine.gestao_tarefas.model.Tarefa;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,5 +34,19 @@ public class TarefaService {
     //DeletarTarefa
     public void deletarPorId(Integer id){
         tarefas.removeIf(tef -> tef.getId().equals(id));
+    }
+
+    public void atualizarTarefa(Integer id, String novaDescricao){
+        tarefas.stream()
+                .filter(tar -> tar.getId().equals(id))
+                .findFirst()
+                .ifPresent(tar -> tar.setDescricao(novaDescricao));
+            }
+
+    public void concluirTarefa(Integer id){
+        tarefas.stream()
+                .filter(tar -> tar.getId().equals(id))
+                .findFirst()
+                .ifPresent(tar -> tar.setConcluida(true));
     }
 }

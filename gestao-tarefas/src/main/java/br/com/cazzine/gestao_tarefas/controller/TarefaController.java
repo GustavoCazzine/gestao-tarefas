@@ -29,4 +29,16 @@ public class TarefaController {
     public void deletarPorId(@PathVariable Integer id){
         service.deletarPorId(id);
     }
+
+    //AtualizarTarefa
+    @PutMapping("/{id}")
+    public void atualizarPorId(@PathVariable Integer id, @RequestBody Tarefa novaDescricao){
+        service.atualizarTarefa(id, novaDescricao.getDescricao());
+    }
+
+    //AtualizarStatus
+    @PutMapping("/{id}/concluir")
+    public void atualizarStatusPorId(@PathVariable Integer id){
+        service.concluirTarefa(id);
+    }
 }
